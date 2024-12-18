@@ -2,7 +2,11 @@ const pool = require("./pool");
 
 async function getAllItems() {
   const { rows } = await pool.query(`
-        SELECT items.id, items.item_name, items.price, items.measure, array_agg(categories.category_name) as categories_array
+        SELECT items.id, 
+        items.item_name as item_name, 
+        items.price as price, 
+        items.measure as measure, 
+        array_agg(categories.category_name) as categories_array
         FROM items
         LEFT JOIN items_categories AS relations ON relations.item_id = items.id
         LEFT JOIN categories ON relations.category_id = categories.id
@@ -18,7 +22,11 @@ async function insertItem(name, price, measure) {
 
 async function searchForItem(id) {
   const {rows} = await pool.query(`
-        SELECT items.id, items.item_name, items.price, items.measure, array_agg(categories.category_name) as categories_array
+        SELECT items.id, 
+        items.item_name as item_name, 
+        items.price as price, 
+        items.measure as measure, 
+        array_agg(categories.category_name) as categories_array
         FROM items
         LEFT JOIN items_categories AS relations ON relations.item_id = items.id
         LEFT JOIN categories ON relations.category_id = categories.id
@@ -63,7 +71,11 @@ async function addCategoryOnItem(itemid, categoryid) {
 
 async function getAllItemsInCategory(id) {
     const {rows} = await pool.query(`
-        SELECT items.id, items.item_name, items.price, items.measure, array_agg(categories.category_name) as categories_array
+        SELECT items.id, 
+        items.item_name as item_name, 
+        items.price as price, 
+        items.measure as measure, 
+        array_agg(categories.category_name) as categories_array
         FROM items
         LEFT JOIN items_categories AS relations ON relations.item_id = items.id
         LEFT JOIN categories ON relations.category_id = categories.id

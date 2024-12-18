@@ -7,28 +7,40 @@ exports.showAllCategories = async (req, res) => {
 }
 
 exports.showCategory = async (req, res) => {
-    const searchId = req.params.id;
+    const searchId = req.params.categoryid;
     const newData = await db.getAllItemsInCategory(searchId);
-    res.render("category", {items: newData});
+    const catData = await db.searchForCategory(searchId);
+    res.render("category", {items: newData, category: catData[0]});
 }
 
 exports.startUpdateCategory = async (req, res) => {
-    const searchId = req.params.id;
+    const searchId = req.params.categoryid;
     const newData = await db.searchForCategory(searchId);
-    res.render("updateCategory", {category: newData});
+    res.render("updateCategory", {category: newData[0]});
     
 }
 
 exports.updateCategory = async (req, res) => {
     const newUpdate = req.body;
-    const searchId = req.params.id;
-    await db.updateCategory(searchId,...newUpdate);
+    const searchId = req.params.categoryid;
+    await db.updateCategory(searchId, newUpdate.category_name);
     res.redirect("/");
 }
 
 exports.deleteCategory = async (req, res) => {
-    const searchId = req.params.id;
+    const searchId = req.params.categoryid;
     await db.deleteCategory(searchId);
     res.redirect("/");
 }
+
+exports.startCreateCategory = async (req, res) => {
+    res.render("createCategory");
+}
+
+exports.createCategory = async (req, res) => {
+    const newCreate = req.body;
+    await db.insertCategory(newCreate.category_name);
+    res.redirect("/");
+}
+
 

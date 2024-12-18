@@ -1,0 +1,24 @@
+<!-- views/updateUser.ejs -->
+<!DOCTYPE html>
+<html>
+  <head>
+  </head>
+<body>
+  <form action="/items/create" method="POST">
+    <input type="text" name="item_name" required>
+    <input type="text" name="price" required>
+    <input type="text" name="measure" required>
+    <fieldset>
+        <legend>Choose the Categories:</legend>
+        <% categories.map((category) => { %>
+                <div>
+                    <input type="checkbox" id="<%= category.id %>" name="categories" value="<%= category.id %>"/>
+                    <label for="<%= category.id %>"><%= category.category_name %></label>
+                </div>
+        <% }) %>
+      </fieldset>
+    <button type="submit">Submit</button>
+</form>
+  <a href="/">Back to home</a>
+</body>
+</html>

@@ -1,0 +1,11 @@
+<html>
+  <body>
+    <ul>
+        <li>name: <%= item.item_name %> price: <%= item.price %> measure: <%= item.measure %> categories: <%= item.categories_array %> </li>
+    </ul>
+    <a href=<%= `/items/update/${item.id}` %> >Update</a>
+    <form action=<%= `/items/delete/${item.id}` %> method="POST">
+        <button type="submit">Delete</button>
+    </form>
+  </body>
+</html>
