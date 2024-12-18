@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS items (
   id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   item_name VARCHAR ( 255 ),
   price REAL,
-  measure TEXT
+  measure VARCHAR (100)
 );
 
 CREATE TABLE IF NOT EXISTS categories (
