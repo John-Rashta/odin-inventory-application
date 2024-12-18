@@ -75,6 +75,15 @@ async function getAllItemsInCategory(id) {
 
 }
 
+async function deleteCategoriesFromItem(id) {
+    await pool.query("DELETE FROM items_categories WHERE item_id = $1", [id]);
+}
+
+async function searchForCategory(id) {
+    const {rows} = await pool.query("SELECT * FROM categories WHERE id = $1", [id]);
+    return rows;
+}
+
 module.exports = {
   getAllItems,
   insertItem,
@@ -88,6 +97,8 @@ module.exports = {
   removeCategoryOnItem,
   addCategoryOnItem,
   getAllItemsInCategory,
+  deleteCategoriesFromItem,
+  searchForCategory,
 };
 
 /*
