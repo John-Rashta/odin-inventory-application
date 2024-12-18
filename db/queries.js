@@ -12,8 +12,8 @@ async function getAllItems() {
 }
 
 async function insertItem(name, price, measure) {
-  const newId = await pool.query("INSERT INTO items (item_name, price, measure) VALUES ($1, $2, $3) RETURNING id", [name, price, measure]);
-  return newId;
+  const {rows} = await pool.query("INSERT INTO items (item_name, price, measure) VALUES ($1, $2, $3) RETURNING id", [name, price, measure]);
+  return rows;
 }
 
 async function searchForItem(id) {
@@ -37,7 +37,7 @@ async function deleteCategory(id) {
 }
 
 async function getAllCategories() {
-    const rows = await pool.query("SELECT * FROM categories");
+    const {rows} = await pool.query("SELECT * FROM categories");
     return rows;
 }
 
@@ -61,6 +61,20 @@ async function addCategoryOnItem(itemid, categoryid) {
     await pool.query("INSERT INTO items_categories (item_id, category_id) VALUES ($1, $2)", [itemid, categoryid]);
 }
 
+async function getAllItemsInCategory(id) {
+    const {rows} = await pool.query(`
+        SELECT items.id, items.item_name, items.price, items.measure, array_agg(categories.category_name) as categories_array
+        FROM items
+        LEFT JOIN items_categories AS relations ON relations.item_id = items.id
+        LEFT JOIN categories ON relations.category_id = categories.id
+        WHERE categories.id = $1
+        GROUP BY items.id, items.item_name, items.price, items.measure
+    `, [id]);
+
+    return rows;
+
+}
+
 module.exports = {
   getAllItems,
   insertItem,
@@ -73,6 +87,7 @@ module.exports = {
   getAllCategories,
   removeCategoryOnItem,
   addCategoryOnItem,
+  getAllItemsInCategory,
 };
 
 /*
@@ -81,7 +96,7 @@ module.exports = {
 FROM items
 LEFT JOIN items_categories AS relations ON relations.item_id = items.id
 LEFT JOIN categories ON relations.category_id = categories.id
-WHERE items.id = 1
+WHERE categories.id = 1
 GROUP BY items.id, items.item_name, items.price, items.measure;
 "
 
