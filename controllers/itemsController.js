@@ -1,5 +1,7 @@
-const { body, validationResult, query, param } = require("express-validator");
+const { body, validationResult, query, param, matchedData } = require("express-validator");
 const db = require("../db/queries");
+const asyncHandler = require('express-async-handler');
+const helpWithErrors = require("../errors/helpWithErrors");
 
 const validateForm = [
     body("item_name").trim()
@@ -10,7 +12,9 @@ const validateForm = [
     body("measure").trim()
         .isAlphanumeric().withMessage("Must only contain letters and/or numbers.")
         .isLength({min: 1, max: 100}).withMessage("Max 100 characters."),
-    body("categories").isInt(),
+    body("categories")
+    .optional({values: "falsy"})
+    .isInt(),
   ];
   
 const validateId = [
@@ -18,44 +22,57 @@ const validateId = [
         .toInt().isInt(),
 ];
 
+const cantFindItem = "Could Not Find Item.";
+
 exports.showItem = [
     validateId,
-    async (req, res) => {
+    asyncHandler(async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).send("ERROR");
+            return res.status(400).send(cantFindItem);
         }
         const searchId = req.params.itemid;
         const newData = await db.searchForItem(searchId);
+        helpWithErrors(newData, cantFindItem);
         res.render("item", {item: newData[0]});
-    }
-
+    })
 ];
 
 exports.startUpdateItem = [
     validateId,
-    async (req, res) => {
+    asyncHandler(async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).send("ERROR");
+            return res.status(400).send(cantFindItem);
         }
         const searchId = req.params.itemid;
         const allCategories = await db.getAllCategories();
         const newData = await db.searchForItem(searchId);
+        helpWithErrors(newData, cantFindItem);
         res.render("updateItem", {categories: allCategories, item: newData[0]});
         
-    }
+    })
 ];
 
 exports.updateItem = [
     validateId.concat(validateForm),
-    async (req, res) => {
+    asyncHandler(async (req, res) => {
         const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).send("ERROR");
+        const newUpdate = matchedData(req);
+        if (!Object.hasOwn(newUpdate, "itemid")) {
+            throw new CustomNotFoundError(cantFindItem);
         }
-        const newUpdate = req.body;
-        const searchId = req.params.itemid;
+        if (!errors.isEmpty()) {
+            const newData = await db.searchForItem(newUpdate.itemid);
+            const allCategories = await db.getAllCategories();
+            helpWithErrors(newData, cantFindItem);
+            return res.status(400).render("updateItem", {
+                errors: errors.array(),
+                categories: allCategories,
+                item: newData[0],
+              });
+        }
+        const searchId = newUpdate.itemid;
         await db.updateItem(searchId, newUpdate.item_name, newUpdate.price, newUpdate.measure);
         await db.deleteCategoriesFromItem(searchId);
         if (newUpdate.categories) {
@@ -69,35 +86,39 @@ exports.updateItem = [
         }
         res.redirect("/");
         
-    }
+    })
 ];
 
 exports.deleteItem = [
     validateId,
-    async (req, res) => {
+    asyncHandler(async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).send("ERROR");
+            return res.status(400).send(cantFindItem);
         }
         const searchId = req.params.itemid;
         await db.deleteItem(searchId);
         res.redirect("/");
-    }
+    })
 ];
 
-exports.startCreateItem = async (req, res) => {
+exports.startCreateItem = asyncHandler(async (req, res) => {
     const categories = await db.getAllCategories();
     res.render("create" , {categories});
-};
+});
 
 exports.createItem = [
-    validateId.concat(validateForm),
-    async (req, res) => {
+    validateForm,
+    asyncHandler(async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).send("ERROR");
+            const categories = await db.getAllCategories();
+            return res.status(400).render("create", {
+                errors: errors.array(),
+                categories,
+              });
         }
-        const newCreate = req.body;
+        const newCreate = matchedData(req);
         const [newId] = await db.insertItem(newCreate.item_name, newCreate.price, newCreate.measure);
         if (newCreate.categories) {
             if (Array.isArray(newCreate.categories)) {
@@ -109,6 +130,5 @@ exports.createItem = [
             }
         }
         res.redirect("/");
-    }
-
+    })
 ];

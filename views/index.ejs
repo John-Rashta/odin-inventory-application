@@ -1,9 +1,11 @@
 <html>
   <body>
     <ul>
-    <% items.map((item) => { %>
-        <li>name: <%= item.item_name %> categories: <%=item.categories_array %>  <a href=<%= `/items/${item.id}` %> >Details</a> </li>
-    <% }) %>
+    <% if (items) { %>
+      <% items.map((item) => { %>
+          <li>name: <%= item.item_name %> categories: <%=item.categories_array %>  <a href=<%= `/items/${item.id}` %> >Details</a> </li>
+      <% }) %>
+    <% } %>
     </ul>
     <a href="/categories" >Categories</a>
   </body>

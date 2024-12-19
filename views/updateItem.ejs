@@ -4,25 +4,28 @@
   <head>
   </head>
 <body>
+  <%- include("partials/errors.ejs") %>
   <form action=<%= `/items/update/${item.id}` %> method="POST">
     <input type="text" name="item_name" value="<%= item.item_name %>" required>
     <input type="text" name="price" value="<%= item.price %>" required>
     <input type="text" name="measure" value="<%= item.measure %>" required>
     <fieldset>
         <legend>Choose the Categories:</legend>
-        <% categories.map((category) => { %>
-            <% if (item.categories_array.includes(category.category_name)) { %>
-                <div>
-                    <input type="checkbox" id="<%= category.id %>" name="categories" value="<%= category.id %>" checked />
-                    <label for="<%= category.id %>"><%= category.category_name %></label>
-                </div>
-            <% } else { %>
-                <div>
-                    <input type="checkbox" id="<%= category.id %>" name="categories" value="<%= category.id %>"/>
-                    <label for="<%= category.id %>"><%= category.category_name %></label>
-                </div>
-            <% } %>
-        <% }) %>
+        <% if (categories) { %>
+          <% categories.map((category) => { %>
+              <% if (item.categories_array.includes(category.category_name)) { %>
+                  <div>
+                      <input type="checkbox" id="<%= category.id %>" name="categories" value="<%= category.id %>" checked />
+                      <label for="<%= category.id %>"><%= category.category_name %></label>
+                  </div>
+              <% } else { %>
+                  <div>
+                      <input type="checkbox" id="<%= category.id %>" name="categories" value="<%= category.id %>"/>
+                      <label for="<%= category.id %>"><%= category.category_name %></label>
+                  </div>
+              <% } %>
+          <% }) %>
+        <% } %>
       </fieldset>
     <button type="submit">Submit</button>
 </form>

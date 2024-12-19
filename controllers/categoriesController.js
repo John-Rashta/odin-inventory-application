@@ -1,10 +1,13 @@
-const { body, validationResult, param } = require("express-validator");
+const { body, validationResult, param, matchedData } = require("express-validator");
 const db = require("../db/queries");
+const asyncHandler = require('express-async-handler');
+const helpWithErrors = require("../errors/helpWithErrors");
+const CustomNotFoundError = require("../errors/CustomNotFoundError");
 
-exports.showAllCategories = async (req, res) => {
+exports.showAllCategories = asyncHandler(async (req, res) => {
     const newData = await db.getAllCategories();
     res.render("categories", {categories: newData});
-}
+});
 
 const validateName = [
     body("category_name").trim()
@@ -17,60 +20,70 @@ const validateId = [
         .toInt().isInt(),
 ];
 
+const cantFindCategory = "Could Not Find Category.";
+
 exports.showCategory = [
     validateId,
-    async (req, res) => {
+    asyncHandler(async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).send("ERROR");
+            return res.status(400).send(cantFindCategory);
         }
         const searchId = req.params.categoryid;
         const newData = await db.getAllItemsInCategory(searchId);
         const catData = await db.searchForCategory(searchId);
+        helpWithErrors(catData, cantFindCategory);
         res.render("category", {items: newData, category: catData[0]});
-    }
+    })
 ];
 
 exports.startUpdateCategory = [
     validateId,
-    async (req, res) => {
+    asyncHandler(async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).send("ERROR");
+            return res.status(400).send(cantFindCategory);
         }
         const searchId = req.params.categoryid;
         const newData = await db.searchForCategory(searchId);
+        helpWithErrors(newData, cantFindCategory);
         res.render("updateCategory", {category: newData[0]});
         
-    }
+    })
 ];
 
 exports.updateCategory = [
     validateId.concat(validateName),
-    async (req, res) => {
+    asyncHandler(async (req, res) => {
         const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).send("ERROR");
+        const data = matchedData(req);
+        if (!Object.hasOwn(data, "categoryid")) {
+            throw new CustomNotFoundError(cantFindCategory);
         }
-        const newUpdate = req.body;
-        const searchId = req.params.categoryid;
-        await db.updateCategory(searchId, newUpdate.category_name);
+        if (!errors.isEmpty()) {
+            const newData = await db.searchForCategory(data.categoryid);
+            helpWithErrors(newData, cantFindCategory);
+            return res.status(400).render("updateCategory", {
+                errors: errors.array(),
+                category: newData[0],
+              });
+        }
+        await db.updateCategory(data.categoryid, data.category_name);
         res.redirect("/");
-    }
+    })
 ];
 
 exports.deleteCategory = [
     validateId,
-    async (req, res) => {
+    asyncHandler(async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).send("ERROR");
+            return res.status(400).send(cantFindCategory);
         }
         const searchId = req.params.categoryid;
         await db.deleteCategory(searchId);
         res.redirect("/");
-    }
-
+    })
 ];
 
 exports.startCreateCategory = async (req, res) => {
@@ -79,15 +92,17 @@ exports.startCreateCategory = async (req, res) => {
 
 exports.createCategory = [
     validateName,
-    async (req, res) => {
+    asyncHandler(async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).send("ERROR");
+            return res.status(400).render("createCategory", {
+                errors: errors.array(),
+              });
         }
-        const newCreate = req.body;
+        const newCreate = matchedData(req);
         await db.insertCategory(newCreate.category_name);
         res.redirect("/");
-    }
+    })
 ];
 
 
