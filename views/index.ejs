@@ -1,12 +1,24 @@
 <html>
+  <head>
+    <link rel="stylesheet" href="/index.css">
+  </head>
   <body>
-    <ul>
-    <% if (items) { %>
-      <% items.map((item) => { %>
-          <li>name: <%= item.item_name %> categories: <%=item.categories_array %>  <a href=<%= `/items/${item.id}` %> >Details</a> </li>
-      <% }) %>
-    <% } %>
-    </ul>
-    <a href="/categories" >Categories</a>
+    <div class="pageContainer">
+      <%- include('./partials/navbar') %>
+      <main>
+        <div class="indexHeader">
+          <h1>Items</h1>
+          <a href="/items/create"><button class="newButton mainButton">New Item</button></a>
+        </div>
+        <div class="itemsContainer">
+          <% if (items) { %>
+            <% items.map((item) => { %>
+              <%- include("partials/indexItem.ejs", {item}) %>
+            <% }) %>
+          <% } %>
+        </div>
+      </main>
+      <%- include('./partials/footer')%>
+    </div>
   </body>
 </html>

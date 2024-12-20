@@ -2,13 +2,19 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link rel="stylesheet" href="/createCategory.css">
   </head>
 <body>
-  <%- include("partials/errors.ejs") %>
-  <form action=<%= `/categories/update/${category.id}` %> method="POST">
-    <input type="text" name="category_name" value="<%= category.category_name %>" required>
-    <button type="submit">Submit</button>
-  </form>
-  <a href="/">Back to home</a>
+  <div class="pageContainer">
+    <%- include('./partials/navbar') %>
+    <main>
+      <%- include("partials/errors.ejs") %>
+      <form action=<%= `/categories/update/${category.id}` %> method="POST">
+        <input type="text" name="category_name" value="<%= category.category_name %>" required>
+        <button type="submit">Update Category</button>
+      </form>
+    </main>
+    <%- include('./partials/footer')%>
+  </div>
 </body>
 </html>

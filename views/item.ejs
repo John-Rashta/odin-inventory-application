@@ -1,11 +1,40 @@
 <html>
+  <head>
+    <link rel="stylesheet" href="/item.css">
+  </head>
   <body>
-    <ul>
-        <li>name: <%= item.item_name %> price: <%= item.price %> measure: <%= item.measure %> categories: <%= item.categories_array %> </li>
-    </ul>
-    <a href=<%= `/items/update/${item.id}` %> >Update</a>
-    <form action=<%= `/items/delete/${item.id}` %> method="POST">
-        <button type="submit">Delete</button>
-    </form>
+    <div class="pageContainer">
+      <%- include('./partials/navbar') %>
+      <main>
+        <div class="itemCard">
+          <div class="itemName">
+              <%= item.item_name %>
+          </div>
+          <div>
+              <%= item.price %>$
+          </div>
+          <div>
+              <%= item.measure %>
+          </div>
+          <div class="categoriesContainer">
+              <p>Categories:</p>
+              <div class="categoriesDiv">
+                  <% if (item.categories_array) { %>
+                      <% item.categories_array.map((category) => { %>
+                          <div><%=category%></div>
+                      <% }) %>
+                  <% } %>
+              </div>
+          </div>
+          <div class="itemButtons">
+            <a href=<%= `/items/update/${item.id}` %> ><button>Update</button></a>
+            <form action=<%= `/items/delete/${item.id}` %> method="POST">
+                <button class="deleteDiv" type="submit">Delete</button>
+            </form>
+          </div>
+        </div>
+      </main>
+      <%- include('./partials/footer')%>
+    </div>
   </body>
 </html>

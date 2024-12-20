@@ -1,0 +1,18 @@
+@import "./basic.css";
+
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.itemButtons {
+    display: flex;
+    gap: 10px;
+}
+
+.itemButtons button {
+    background-color: #67e8f9;
+    border-color: #0f766e;
+    border-radius: 5px;
+}

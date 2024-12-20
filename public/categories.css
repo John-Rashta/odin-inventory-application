@@ -1,0 +1,25 @@
+@import "./basic.css";
+
+.categoriesList {
+    padding-top: 8vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+li {
+    margin-top: 15px;
+}
+
+.categoriesHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 5vw;
+}
+
+li>a {
+    font-size: 1.3rem;
+    color: #c2410c;
+}
+

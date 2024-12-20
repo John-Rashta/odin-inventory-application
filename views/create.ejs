@@ -2,26 +2,43 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link rel="stylesheet" href="/create.css">
   </head>
 <body>
-  <%- include("partials/errors.ejs") %>
-  <form action="/items/create" method="POST">
-    <input type="text" name="item_name" required>
-    <input type="text" name="price" required>
-    <input type="text" name="measure" required>
-    <fieldset>
-        <legend>Choose the Categories:</legend>
-        <% if (categories) { %>
-          <% categories.map((category) => { %>
-                  <div>
-                      <input type="checkbox" id="<%= category.id %>" name="categories" value="<%= category.id %>"/>
-                      <label for="<%= category.id %>"><%= category.category_name %></label>
-                  </div>
-          <% }) %>
-        <% } %>
-      </fieldset>
-    <button type="submit">Submit</button>
-</form>
-  <a href="/">Back to home</a>
+  <div class="pageContainer">
+    <%- include('./partials/navbar') %>
+    <main>
+      <%- include("partials/errors.ejs") %>
+      <form action="/items/create" method="POST">
+        <div class="inputDiv">
+          <label for="">
+            Name:
+            <input class="nameInput" type="text" name="item_name" required>
+          </label>
+          <label for="">
+            Price:
+            <input type="text" name="price" required>
+          </label>
+          <label for="">
+            Measure:
+            <input type="text" name="measure" required>
+          </label>
+        </div>
+        <fieldset>
+            <legend>Choose the Categories:</legend>
+            <% if (categories) { %>
+              <% categories.map((category) => { %>
+                      <div>
+                          <input type="checkbox" id="<%= category.id %>" name="categories" value="<%= category.id %>"/>
+                          <label for="<%= category.id %>"><%= category.category_name %></label>
+                      </div>
+              <% }) %>
+            <% } %>
+          </fieldset>
+        <button type="submit">Create Item</button>
+      </form>
+    </main>
+    <%- include('./partials/footer')%>
+  </div>
 </body>
 </html>

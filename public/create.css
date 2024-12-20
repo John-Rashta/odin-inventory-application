@@ -1,0 +1,68 @@
+@import "./basic.css";
+
+
+
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    justify-content: center;
+}
+
+.inputDiv {
+    display: flex;
+    gap: 10px;
+}
+
+.inputDiv input {
+    width: max(10vw, 100px);
+}
+
+.nameInput {
+    width: max(10vw, 200px) !important;
+}
+
+fieldset {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 10px;
+    column-gap: 30px;
+    padding: 20px;
+}
+
+legend {
+    grid-column: 1/3 ;
+    text-align: center;
+}
+
+button {
+    font-size: 1.2rem;
+    font-weight: bold;
+    border: 3px solid #a855f7;
+    color: #0f766e;
+    background-color: #dcfce7;
+    border-radius: 3px;
+}
+
+form {
+    font-size: 1.1rem;
+    background-color: #cffafe;
+    padding: 15px;
+    border: 3px solid #06b6d4;
+}
+
+legend {
+    font-size: 1.2rem;
+}
+
+input {
+    background-color: #ecfccb;
+    border: 1px  solid #22c55e;
+}

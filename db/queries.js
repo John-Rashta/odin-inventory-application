@@ -79,7 +79,11 @@ async function getAllItemsInCategory(id) {
         FROM items
         LEFT JOIN items_categories AS relations ON relations.item_id = items.id
         LEFT JOIN categories ON relations.category_id = categories.id
-        WHERE categories.id = $1
+        WHERE items.id IN (SELECT items.id 
+            FROM items
+            JOIN items_categories ON items.id = items_categories.item_id
+            WHERE items_categories.category_id = $1
+            )
         GROUP BY items.id, items.item_name, items.price, items.measure
     `, [id]);
 

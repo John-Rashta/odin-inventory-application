@@ -1,16 +1,27 @@
 <html>
+  <head>
+    <link rel="stylesheet" href="/category.css">
+  </head>
   <body>
-    <ul>
-    <h1><%= category.category_name %></h1>
-    <% if (items) { %>
-        <% items.map((item) => { %>
-            <%- include("partials/groceryItem.ejs", {item}) %>
-        <% }) %>
-    <% } %>
-    </ul>
-    <a href=<%= `/categories/update/${category.id}` %> >Update</a>
-    <form action=<%= `/categories/delete/${category.id}` %>  method="POST">
-        <button type="submit">Delete</button>
-    </form>
+    <div class="pageContainer">
+      <%- include('./partials/navbar') %>
+      <main>
+        <h1><%= category.category_name %></h1>
+        <div class="categoryHeader">
+          <a href=<%= `/categories/update/${category.id}` %> ><button class="newButton mainButton">Update Category</button> </a> 
+          <form action=<%= `/categories/delete/${category.id}` %>  method="POST">
+              <button  class="deleteDiv mainButton" type="submit">Delete Category</button>
+          </form>
+        </div>
+        <div class="itemsContainer">
+          <% if (items) { %>
+              <% items.map((item) => { %>
+                  <%- include("partials/groceryItem.ejs", {item}) %>
+              <% }) %>
+          <% } %>
+        </div>
+      </main>
+      <%- include('./partials/footer')%>
+    </div>
   </body>
 </html>

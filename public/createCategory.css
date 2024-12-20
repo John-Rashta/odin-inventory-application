@@ -1,0 +1,30 @@
+@import "./basic.css";
+
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+button {
+    align-self: center;
+}
+
+input {
+    background-color: #fed7aa;
+    border-color: #fecaca;
+}
+
+button {
+    font-size: 1.2rem;
+    color: #ea580c;
+    background-color: #fde047;
+    font-weight: bold;
+    border: 2px solid #c2410c;
+}

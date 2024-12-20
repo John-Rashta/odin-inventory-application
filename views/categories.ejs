@@ -1,11 +1,26 @@
 <html>
+  <head>
+    <link rel="stylesheet" href="/categories.css">
+  </head>
   <body>
-    <ul>
-    <% if (categories) { %>
-      <% categories.map((category) => { %>
-          <li><a href=<%= `/categories/${category.id}` %> ><%= category.category_name %> </a> </li>
-      <% }) %>
-    <% } %>
-    </ul>
+    <div class="pageContainer">
+      <%- include('./partials/navbar') %>
+      <main>
+        <div class="categoriesHeader">
+          <h1>Categories</h1>
+          <a href="/categories/create"><button class="newButton mainButton">New Category</button></a>
+        </div>
+        <div class="categoriesList">
+          <ul>
+          <% if (categories) { %>
+            <% categories.map((category) => { %>
+                <li><a href=<%= `/categories/${category.id}` %> ><%= category.category_name %> </a> </li>
+            <% }) %>
+          <% } %>
+          </ul>
+        </div>
+      </main>
+      <%- include('./partials/footer')%>
+    </div>
   </body>
 </html>
